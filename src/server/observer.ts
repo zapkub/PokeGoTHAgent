@@ -19,7 +19,7 @@ export class AgentInfo {
   agentInfo: IAgent;
 }
 export interface IAgentsCallback {
-  receiveAgentInfo(data: AgentInfo);
+  receiveAgentInfo(data: AgentInfo): void;
 }
 export interface INearByPokemon {
   DistanceMeters: any;
@@ -31,7 +31,7 @@ export interface INearByPokemon {
   PokedexNumber: number;
 }
 export class ObserverAgent {
-  public pokemonCallback: Function;
+  public managerCallback: IAgentsCallback;
   private pokeio: any;
   constructor(info: IAgent) {
     this.pokeio = new PokemonGO.Pokeio();
