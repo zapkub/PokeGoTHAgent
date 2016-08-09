@@ -1,0 +1,7 @@
+{
+  "globalDependencies": {
+    "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
+    "lodash": "registry:dt/lodash#4.14.0+20160802150749",
+    "node": "registry:dt/node#6.0.0+20160807145350"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/server",
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "emitDecoratorMetadata": true,
+    "removeComments": true,
+    "module": "commonjs",
+    "diagnostics": true,
+    "sourceMap": true,
+    "target": "ES6",
+    "allowJs":true,
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "allowUnusedLabels": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
