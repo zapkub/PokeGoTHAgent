@@ -6,15 +6,17 @@ const PokemonGO = require('pokemon-go-node-api');
 export interface IAgent {
   id: string;
   password: string;
+  paths?: {latitude: number; longitude: number}[];
   location: {
     type: string;
     name: string;
     coords: {
       latitude: number;
       longitude: number;
-    }
+    },
   };
 }
+
 export interface IAgentInfo {
   nearByPokemon?: INearByPokemon[];
   catchablePokemon?: ICatchablePokemon[];
@@ -22,9 +24,14 @@ export interface IAgentInfo {
     id: string;
     location: {
       name: string;
+      coords: {
+        latitude: number;
+        longitude: number;
+      };
     };
   };
 }
+
 export interface IAgentsCallback {
   receiveAgentInfo(data: IAgentInfo): void;
 }
@@ -44,16 +51,26 @@ export interface ICatchablePokemon {
   Latitude: number;
   Longitude: number;
   ExpirationTimeMs: any;
+  detail: any;
 }
 
-
+class LatLng {
+  type: string = 'coords';
+  latitude: number;
+  longitude: number;
+  constructor(lat, lng) {
+    this.latitude = lat;
+    this.longitude = lng;
+  }
+}
 
 
 export class ObserverAgent {
   public managerCallback: IAgentsCallback;
   public info: IAgent;
   private pokeio: any;
-
+  private destination: LatLng[];
+  private currentDestinationIndex = 0;
   constructor(info: IAgent) {
     this.info = info;
     this.pokeio = new PokemonGO.Pokeio();
@@ -78,6 +95,10 @@ export class ObserverAgent {
   }
   private agentCallback(err): void {
     if (err) { throw err; }
+    if (this.info.paths) {
+      this.destination = this.info.paths.map(item => new LatLng(item.latitude, item.longitude));
+      setInterval(this.walk.bind(this), 5000);
+    }
     const heartBeat = () => {
 
       this.pokeio.Heartbeat((err, hb) => {
@@ -105,4 +126,43 @@ export class ObserverAgent {
     // heartBeat();
     setInterval(heartBeat, 10000);
   }
+  private walk (): void {
+    let current = this.pokeio.GetLocationCoords() as LatLng;
+    console.log('start at ');
+    console.log(current);
+    let dest = this.destination[this.currentDestinationIndex];
+    console.log('to ');
+    console.log(dest);
+
+    let deltaX = dest.latitude - current.latitude;
+    let deltaY = dest.longitude - current.longitude;
+
+
+    this.movingToPosition(new LatLng(
+        current.latitude + (deltaX / 60),
+        current.longitude + (deltaY / 60)
+    )).then(
+      (nextPosition) => {
+         this.info.location.coords = nextPosition;
+      });
+
+
+
+  }
+  private async movingToPosition(dest: LatLng): Promise<LatLng> {
+    console.log('begin move');
+
+    return new Promise<LatLng>((fulfil, reject) => {
+      const coords = {
+         coords: {latitude: dest.latitude,
+         longitude: dest.longitude},
+         type: 'coords',
+      };
+      console.log(coords);
+      this.pokeio.SetLocation(coords, (err, coordinates) => {
+        if ( err ) { console.log(err); reject(err); };
+        fulfil(coordinates);
+      });
+    });
+  };
 }

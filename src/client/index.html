@@ -21,10 +21,6 @@
 
 <!--EXTERNAL STYLESHEET-->
   <link rel="icon" href="data:;base64,iVBORwOKGO=">
-  <link rel="stylesheet" href="./assets/fonts/thaisans/stylesheet.css">
-  <link rel="stylesheet" href="./assets/fonts/quark/stylesheet.css">
-  <link rel="stylesheet" href="./assets/fonts/DB/stylesheet.css">
-  <link rel="stylesheet" href="./assets/fonts/foundation-icons/foundation-icons.css">
 
   <title>Lumpini park pokemon tracker</title>
   <style>.init { text-align:center; }</style>
@@ -35,7 +31,8 @@
     <div style='opacity:0;font-family:"thaisans_neueregular";position:absolute'>hidden</div>
     <div class="init" style="font-family:thaisans_neueregular" id="root">โหลดอยู่จ้า...</div> 
   </div>
-  <script type="application/javascript" src="./js/bundle.js"></script>
-
+  <script type="application/javascript" src="/js/bundle.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    async defer></script>
   </body>
 </html>

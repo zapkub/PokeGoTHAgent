@@ -1,10 +1,18 @@
 {
   "globalDependencies": {
-    "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
-    "lodash": "registry:dt/lodash#4.14.0+20160802150749",
-    "node": "registry:dt/node#6.0.0+20160807145350",
+    "classnames": "registry:dt/classnames#0.0.0+20160316155526",
     "express": "registry:dt/express#4.0.0+20160317120654",
     "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160701212727",
+    "google.maps": "registry:dt/google.maps#3.20.0+20160805173050",
+    "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
+    "lodash": "registry:dt/lodash#4.14.0+20160802150749",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "node": "registry:dt/node#6.0.0+20160807145350",
+    "react": "registry:dt/react#0.14.0+20160805125551",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "react-redux": "registry:dt/react-redux#4.4.0+20160724070751",
+    "redux": "registry:dt/redux#3.5.2+20160703092728",
+    "redux-thunk": "registry:dt/redux-thunk#2.1.0+20160703120921",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157"
   }
 }
