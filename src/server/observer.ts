@@ -1,5 +1,6 @@
 
 import * as _ from 'lodash';
+import * as Pokedex from './pokedex';
 const PokemonGO = require('pokemon-go-node-api');
 
 export interface IAgent {
@@ -14,12 +15,18 @@ export interface IAgent {
     }
   };
 }
-export class AgentInfo {
-  nearByPokemon: INearByPokemon[];
-  agentInfo: IAgent;
+export interface IAgentInfo {
+  nearByPokemon?: INearByPokemon[];
+  catchablePokemon?: ICatchablePokemon[];
+  info: {
+    id: string;
+    location: {
+      name: string;
+    };
+  };
 }
 export interface IAgentsCallback {
-  receiveAgentInfo(data: AgentInfo): void;
+  receiveAgentInfo(data: IAgentInfo): void;
 }
 export interface INearByPokemon {
   DistanceMeters: any;
@@ -29,25 +36,47 @@ export interface INearByPokemon {
     unsigned: boolean;
   };
   PokedexNumber: number;
+  detail: any;
 }
+export interface ICatchablePokemon {
+  spawnPointId: string;
+  PokedexTypeId: number;
+  Latitude: number;
+  Longitude: number;
+  ExpirationTimeMs: any;
+}
+
+
+
+
 export class ObserverAgent {
   public managerCallback: IAgentsCallback;
+  public info: IAgent;
   private pokeio: any;
+
   constructor(info: IAgent) {
+    this.info = info;
     this.pokeio = new PokemonGO.Pokeio();
     this.pokeio.init(info.id, info.password, info.location, 'ptc', this.agentCallback.bind(this));
   }
-  nearByPokemonCallback (nearBy: INearByPokemon[]): void {
-    console.log(nearBy);
+  private nearByPokemonCallback (nearBy: INearByPokemon[], catchable: any[]): void {
+
     const filtered = _.uniqBy(nearBy, (item) => {
       return item.EncounterId.high + item.EncounterId.low;
     });
-    console.log(filtered);
+    if (this.managerCallback) {
+      this.managerCallback.receiveAgentInfo({
+        nearByPokemon: filtered,
+        catchablePokemon: catchable,
+        info: this.info,
+      });
+    }
+
   }
-  spawnPointCallback (spawnPoint: any[]): void {
-    
+  private spawnPointCallback (spawnPoint: any[]): void {
+
   }
-  agentCallback(err): void {
+  private agentCallback(err): void {
     if (err) { throw err; }
     const heartBeat = () => {
 
@@ -55,21 +84,25 @@ export class ObserverAgent {
         if (err) { console.log(err); }
         const location = this.pokeio.GetLocationCoords();
         const pokemons = [];
+        const catchable = [];
         hb.cells.map(item => {
           item.NearbyPokemon.map(
             item => {
+              item.detail = Pokedex.getPokemonById(item.PokedexNumber - 1);
               pokemons.push(item);
             }
           );
-          // if (item.SpawnPoint.length > 0 ){
-          //   this.spawnPointCallback(item.SpawnPoint);
-          // }
+          item.MapPokemon.map(item => {
+            item.detail = Pokedex.getPokemonById((item as ICatchablePokemon).PokedexTypeId - 1);
+            catchable.push(item);
+          });
         });
-        this.nearByPokemonCallback(pokemons);
+
+        this.nearByPokemonCallback(pokemons, catchable);
       });
     };
 
-    heartBeat();
+    // heartBeat();
     setInterval(heartBeat, 10000);
   }
 }

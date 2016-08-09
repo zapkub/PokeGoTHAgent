@@ -2,6 +2,9 @@
   "globalDependencies": {
     "isomorphic-fetch": "registry:dt/isomorphic-fetch#0.0.0+20160524142046",
     "lodash": "registry:dt/lodash#4.14.0+20160802150749",
-    "node": "registry:dt/node#6.0.0+20160807145350"
+    "node": "registry:dt/node#6.0.0+20160807145350",
+    "express": "registry:dt/express#4.0.0+20160317120654",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160701212727",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157"
   }
 }
